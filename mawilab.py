@@ -33,6 +33,12 @@ class MawilabDataBackendApi(object):
                 if key == 'source':
                     continue
 
+                if key == 'ip':
+                    if (params[key][0] != data[0]) and (params[key][0] != data[2]):
+                       skip = True
+                       break
+                    continue
+
                 if params[key][0] != data[columns[key]]:
                     skip = True
                     break
@@ -50,6 +56,6 @@ class MawilabDataBackendApi(object):
                 'nbdetector': data[5],
                 'confidence': convert_conf(data[6]),
                 'time': datetime.strptime(data[7], "%Y%m%d"),
-                'until': datetime.strptime(data[7], "%Y%m%d"),
+                #'until': datetime.strptime(data[7], "%Y%m%d"),
                 }
 
