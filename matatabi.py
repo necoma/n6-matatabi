@@ -71,17 +71,16 @@ class MatatabiDataBackendApi(object):
         # this is a dummy and naive implementation :) -- in a real
         # implementation some kind of database query would need to
         # be performed instead...
-        if 'time.max' not in params.keys():
-            time_max = datetime.utcnow()
-        else:
-            time_max = params['time.max'][0]
-        if 'time.min' not in params.keys():
-            time_min = datetime.utcnow() + timedelta(days=-90)
-        else:
-            time_min = params['time.min'][0]
 
-        query = "select * from %s where dt>='%s' AND dt<='%s' order by dt" % \
-                (params['source'][0], time_min.strftime("%Y%m%d"), time_max.strftime("%Y%m%d"))
+        where_clause = ''
+        if 'time.max' in params.keys():
+            where_clause += "dt<='" + params['time.max'][0].strftime("%Y%m%d") + "'"
+        if 'time.min' in params.keys():
+            where_clause += " dt>='" + params['time.min'][0].strftime("%Y%m%d") + "'"
+        if where_clause != '':
+            where_clause = 'where ' + where_clause
+
+        query = "select * from %s %s order by dt" % (params['source'][0], where_clause)
         query_result = self.RunQuery(query)
 
         # table specific callbacks

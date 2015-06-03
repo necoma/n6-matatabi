@@ -33,13 +33,13 @@ class NotInUseExtendedAddressField(AddressField):
 def convert_conf(value):
     if value == 'LOW':
         return 'low'
-    elif value == 'MED':
+    elif value == 'MED' or value == 'suspicious':
         return 'medium'
-    elif value == 'HIGH':
+    elif value == 'HIGH' or 'anomalous':
         return 'high'
 
 def is_ipv4(n):
-    if n is '':
+    if n is '' or n is None:
 	return False
     try:
         socket.inet_pton(socket.AF_INET, n)
@@ -48,7 +48,7 @@ def is_ipv4(n):
         return False
 
 def is_ipv6(n):
-    if n is '':
+    if n is '' or n is None:
 	return False
     try:
         socket.inet_pton(socket.AF_INET6, n)

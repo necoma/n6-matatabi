@@ -32,6 +32,8 @@ class MawilabDataBackendApi(object):
             for key, value in params.items():
                 if key == 'source':
                     continue
+                if columns.has_key(key) is False:
+                    continue
 
                 if key == 'ip':
                     if (params[key][0] != data[0]) and (params[key][0] != data[2]):
