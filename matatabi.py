@@ -56,10 +56,10 @@ class MatatabiDataBackendApi(object):
         # (for our example JSON-file-based storage...)
         pass
 
-    def RunQuery(self, query):
+    def RunQuery(self, query, parameters):
         cursor = presto.connect('localhost').cursor()
         try:
-            cursor.execute(query, None)
+            cursor.execute(query, parameters)
         except presto.DatabaseError as e:
             raise
         res = cursor.fetchall()
@@ -72,16 +72,21 @@ class MatatabiDataBackendApi(object):
         # implementation some kind of database query would need to
         # be performed instead...
 
-        where_clause = ''
+        time_max = (datetime.utcnow() + timedelta(days=2)).strftime("%Y%m%d")
+        time_min = '20130101'
         if 'time.max' in params.keys():
-            where_clause += "dt<='" + params['time.max'][0].strftime("%Y%m%d") + "'"
+            time_max = params['time.max'][0].strftime("%Y%m%d")
         if 'time.min' in params.keys():
-            where_clause += " dt>='" + params['time.min'][0].strftime("%Y%m%d") + "'"
-        if where_clause != '':
-            where_clause = 'where ' + where_clause
+            time_min = params['time.min'][0].strftime("%Y%m%d")
 
-        query = "select * from %s %s order by dt" % (params['source'][0], where_clause)
-        query_result = self.RunQuery(query)
+        if time_max == '' and time_min == '':
+            query = "select * from " + params['source'][0] + " order by dt" 
+            parameters = None
+        else:
+            query = "select * from " + params['source'][0] + " where dt<=%s and dt>=%s order by dt" 
+            parameters = (time_max, time_min)
+
+        query_result = self.RunQuery(query, parameters)
 
         # table specific callbacks
         if params['source'][0] == 'mawilab':
