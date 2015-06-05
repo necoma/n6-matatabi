@@ -27,7 +27,7 @@ class MawilabDataBackendApi(object):
             if data[3] is None or data[3] == '':
                 continue
 
-            columns = {'sport':1, 'dport':3, 'name':4, 'nbdetector':5, 'confidence':6}
+            columns = {'sport':1, 'dport':3, 'name':4, 'nbdetector':5, 'confidence':6, 'ip':-1}
             skip = False
             for key, value in params.items():
                 if key == 'source':
@@ -45,7 +45,7 @@ class MawilabDataBackendApi(object):
                     skip = True
                     break
 
-            if skip is True:
+            if skip == True:
                 continue
 
             yield {
