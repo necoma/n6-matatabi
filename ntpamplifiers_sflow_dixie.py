@@ -7,13 +7,20 @@ class NtpampSflowDataBackendApi(object):
     def parse(auth_data, params, query_result, **kwargs):
         for data in query_result:
 
-            columns = {'address':0, 'byte':1, 'pkt':2, 'time.min':4, 'time.max':4, 'confidence':6}
+            columns = {'address':0, 'byte':1, 'pkt':2, 'time.min':4, 'time.max':4, 'confidence':6, 'ip':-1}
             skip = False
             for key, value in params.items():
                 if key == 'source':
                     continue
                 if key == 'time.min' or key == 'time.max':
                     continue
+
+                if key == 'ip':
+                    if (params[key][0] != data[0]):
+                       skip = True
+                       break
+                    continue
+
 
                 if params[key][0] != data[columns[key]]:
                     skip = True
