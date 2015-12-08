@@ -86,28 +86,37 @@ class MatatabiDataBackendApi(object):
             query = "select * from " + params['source'][0] + " where dt<=%s and dt>=%s order by dt" 
             parameters = (time_max, time_min)
 
-        query_result = self.RunQuery(query, parameters)
 
         # table specific callbacks
         if params['source'][0] == 'mawilab':
+            query_result = self.RunQuery(query, parameters)
             return MawilabDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         elif params['source'][0] == 'sflow_dixie':
+            query_result = self.RunQuery(query, parameters)
             return SflowDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         elif params['source'][0] == 'zeus_dga_netflow':
+            query_result = self.RunQuery(query, parameters)
             return ZeusDGANetflowDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         elif params['source'][0] == 'ntpamplifiers_sflow_dixie':
+            query_result = self.RunQuery(query, parameters)
             return NtpampSflowDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         elif params['source'][0] == 'suspiciousheavyhitters_sflow_dixie':
+            query_result = self.RunQuery(query, parameters)
             return HeavyHittersSflowDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         elif params['source'][0] == 'phish_summary':
+            query_result = self.RunQuery(query, parameters)
             return PhishSummaryDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         elif params['source'][0] == 'mawi_pcaps':
+            query_result = self.RunQuery(query, parameters)
             return MawiPcapsDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         elif params['source'][0] == 'dns_pcaps':
+            query_result = self.RunQuery(query, parameters)
             return DnsPcapsDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         elif params['source'][0] == 'netflow_wide':
+            query_result = NetflowWideDataBackendApi.RunQuery(params, **kwargs)
             return NetflowWideDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         elif params['source'][0] == 'spam':
+            query_result = self.RunQuery(query, parameters)
             return SpamDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         else:
             print "no parser found"
