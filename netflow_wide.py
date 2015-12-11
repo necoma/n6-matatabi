@@ -15,7 +15,7 @@ class NetflowWideDataBackendApi(object):
         if 'time.min' in params.keys():
             time_min = params['time.min'][0].strftime("%Y%m%d")
         if 'ip' in params.keys():
-            ip = params['ip'][0]
+            ip = params['ip']
 
 	#query = "select * from " + params['source'][0] 
 	query = "select * from " + "netflow_wide_rcfile"
@@ -29,11 +29,14 @@ class NetflowWideDataBackendApi(object):
             query += " and dt>=%s"
             parameters.append(time_min)
 	if ip is not None:
-            query += " and (sa = %s or da = %s)"
-            parameters.append(ip)
-            parameters.append(ip)
+            query += " and (sa = " + " or sa = ".join(["%s" for i in ip]) + " or da = " + " or da = ".join(["%s" for i in ip]) + ")"
+            #query += " and (sa = %s or da = %s)"
+            print query
+            for j in [1,2]:
+                for i in ip:
+                    parameters.append(i)
 
-        query += "order by dt"
+        query += " order by dt"
         cursor = presto.connect('localhost').cursor()
         try:
             cursor.execute(query, parameters)
@@ -60,7 +63,7 @@ class NetflowWideDataBackendApi(object):
                 data[4] = '::'
 
             yield {
-                'category': 'other',
+                'category': 'flow',
 		'source':  params['source'][0],
                 'time': datetime.utcfromtimestamp(data[0]),
                 'until': datetime.utcfromtimestamp(data[1]),

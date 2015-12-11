@@ -22,7 +22,8 @@ class MatatabiDataSpec(DataSpec):
     restriction = None
 
     category = Ext(
-        enum_values=DataSpec.category.enum_values + ('flow-anomaly',),
+        enum_values=DataSpec.category.enum_values + ('flow',)
+	+ ('flow-anomaly',),
     )
 
 
