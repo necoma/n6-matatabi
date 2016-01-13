@@ -18,7 +18,11 @@ class NetflowWideDataBackendApi(object):
             ip = params['ip']
 
 	#query = "select * from " + params['source'][0] 
-	query = "select * from " + "netflow_wide_rcfile"
+	if params['source'][0] == 'netflow_wide':
+	    query = "select * from " + "netflow_wide_rcfile"
+	elif params['source'][0] == 'netflow_ut':
+	    query = "select * from " + "netflow_ut_rcfile"
+
         if time_max != '' or time_min != '' or ip is not None:
             query += " where "
 

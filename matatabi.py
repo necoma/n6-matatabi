@@ -116,6 +116,9 @@ class MatatabiDataBackendApi(object):
         elif params['source'][0] == 'netflow_wide':
             query_result = NetflowWideDataBackendApi.RunQuery(params, **kwargs)
             return NetflowWideDataBackendApi.parse(auth_data, params, query_result, **kwargs)
+        elif params['source'][0] == 'netflow_ut':
+            query_result = NetflowWideDataBackendApi.RunQuery(params, **kwargs)
+            return NetflowWideDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         elif params['source'][0] == 'spam':
             query_result = self.RunQuery(query, parameters)
             return SpamDataBackendApi.parse(auth_data, params, query_result, **kwargs)
