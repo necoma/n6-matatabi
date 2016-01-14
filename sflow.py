@@ -16,7 +16,7 @@ class SflowDataBackendApi(object):
         if 'ip' in params.keys():
             ip = params['ip']
 
-        query = "select srcip,tcpsrcport,dstip,tcpdstport,ipprotocol,unixsecondsutc from " + params['source'][0] 
+        query = "select srcip,dstip,ipprotocol,tcpsrcport,udpsrcport,tcpdstport,udpdstport,unixsecondsutc from " + params['source'][0] 
 
         if time_max != '' or time_min != '' or ip is not None:
             query += " where "
@@ -46,24 +46,31 @@ class SflowDataBackendApi(object):
     @staticmethod
     def parse(auth_data, params, query_result, **kwargs):
         for data in query_result:
-            if data[0] is None or data[0] == '':
+            #print data
+            # protocol switch
+            if data[2] is 1:
+                proto='icmp'
+                sport=0
+                dport=0
+            elif data[2] is 6:
+                proto='tcp'
+                sport=data[3]
+                dport=data[5]
+            elif data[2] is 17:
+                proto='udp'
+                sport=data[4]
+                dport=data[6]
+            else:
                 continue
-            if data[1] is None or data[1] == '':
-                continue
-            if data[2] is None or data[2] == '':
-                continue
-            if data[3] is None or data[3] == '':
-                continue
-            print data
+
             yield {
                 'category': 'flow',
-                'address': [{'ip': data[0], 'dir': 'src'}, {'ip': data[2], 'dir': 'dst'}],
-                'sport': data[1],
-                'dport': data[3],
-                'proto': 'tcp',
-                #'proto': data[4],
+                'address': [{'ip': data[0], 'dir': 'src'}, {'ip': data[1], 'dir': 'dst'}],
+                'sport': sport,
+                'dport': dport,
+                'proto': proto,
                 'source': params['source'][0],
-                'time': datetime.utcfromtimestamp(data[5]),
-                'until': datetime.utcfromtimestamp(data[5]),
+                'time': datetime.utcfromtimestamp(data[7]),
+                'until': datetime.utcfromtimestamp(data[7]),
                 }
 
