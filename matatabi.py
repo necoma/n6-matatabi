@@ -93,7 +93,7 @@ class MatatabiDataBackendApi(object):
             query_result = self.RunQuery(query, parameters)
             return MawilabDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         elif params['source'][0] == 'sflow_dixie':
-            query_result = self.RunQuery(query, parameters)
+            query_result = SflowDataBackendApi.RunQuery(params, **kwargs)
             return SflowDataBackendApi.parse(auth_data, params, query_result, **kwargs)
         elif params['source'][0] == 'zeus_dga_netflow':
             query_result = self.RunQuery(query, parameters)
